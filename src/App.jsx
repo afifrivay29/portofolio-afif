@@ -367,6 +367,8 @@ export default function App() {
       ? projectsData
       : projectsData.filter((p) => p.category === projectFilter);
 
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+
   return (
     <div
       className={`min-h-screen font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-300 ${
@@ -550,9 +552,9 @@ export default function App() {
                   <FolderGit2 size={18} />
                   Lihat Portofolio
                 </button>
-                <a
-                  href="/CV_Afif_Rivaykusnanto.pdf"
-                  download="CV_Afif_Rivaykusnanto.pdf"
+                <button
+                  type="button"
+                  onClick={() => setShowDownloadModal(true)}
                   className={`px-6 py-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 border active:scale-95 ${
                     darkMode
                       ? "bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-200"
@@ -561,7 +563,7 @@ export default function App() {
                 >
                   <Download size={18} />
                   Unduh CV
-                </a>
+                </button>
                 <button
                   onClick={() => scrollToSection("contact")}
                   className={`p-3.5 rounded-xl transition-all border active:scale-95 ${
@@ -573,6 +575,54 @@ export default function App() {
                 >
                   <Mail size={18} />
                 </button>
+
+                {/* Modal Konfirmasi Unduh CV */}
+                {showDownloadModal && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                    <div
+                      className={`w-full max-w-md p-6 rounded-2xl shadow-2xl border transition-all ${
+                        darkMode
+                          ? "bg-slate-900 border-slate-800 text-slate-100"
+                          : "bg-white border-slate-200 text-slate-800"
+                      }`}
+                    >
+                      <h3 className="text-xl font-bold mb-2">
+                        Konfirmasi Download
+                      </h3>
+                      <p
+                        className={`text-sm mb-6 ${darkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
+                        Apakah Anda yakin ingin mendownload CV Afif
+                        Rivaykusnanto?
+                      </p>
+
+                      <div className="flex items-center justify-end gap-3">
+                        {/* Tombol NO */}
+                        <button
+                          type="button"
+                          onClick={() => setShowDownloadModal(false)}
+                          className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
+                            darkMode
+                              ? "bg-slate-800 hover:bg-slate-700 text-slate-300"
+                              : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                          }`}
+                        >
+                          No
+                        </button>
+
+                        {/* Tombol YES (Melakukan unduhan otomatis) */}
+                        <a
+                          href="/CV_Afif_Rivaykusnanto.pdf"
+                          download="CV_Afif_Rivaykusnanto.pdf"
+                          onClick={() => setShowDownloadModal(false)}
+                          className="px-5 py-2.5 rounded-xl font-medium bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-md hover:shadow-indigo-500/25 flex items-center gap-2"
+                        >
+                          Yes
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Quick Contact & Socials */}
