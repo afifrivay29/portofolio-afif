@@ -551,11 +551,8 @@ export default function App() {
                   Lihat Portofolio
                 </button>
                 <a
-                  href="#download-cv"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert("Mengunduh CV Afif Rivaykusnanto...");
-                  }}
+                  href="/CV_Afif_Rivaykusnanto.pdf"
+                  download="CV_Afif_Rivaykusnanto.pdf"
                   className={`px-6 py-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 border active:scale-95 ${
                     darkMode
                       ? "bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-200"
