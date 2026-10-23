@@ -80,29 +80,54 @@ export default function App() {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  // Form Submission
+  // Form Submission ke WhatsApp (0896-8130-5605)
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    // 1. Validasi input sederhana
     const errors = {};
-    if (!formData.name.trim()) errors.name = "Nama wajib diisi";
-    if (!formData.email.trim()) {
-      errors.email = "Email wajib diisi";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Format email tidak valid";
-    }
-    if (!formData.message.trim()) errors.message = "Pesan tidak boleh kosong";
+    if (!formData.name) errors.name = "Nama wajib diisi";
+    if (!formData.email) errors.email = "Email wajib diisi";
+    if (!formData.message) errors.message = "Pesan wajib diisi";
 
-    setFormErrors(errors);
-
-    if (Object.keys(errors).length === 0) {
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setShowToast(true);
-        setFormData({ name: "", email: "", subject: "", message: "" });
-        setTimeout(() => setShowToast(false), 5000);
-      }, 1000);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
     }
+
+    // Tampilkan notifikasi toast sukses
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 4000); // Otomatis sembunyi dalam 4 detik
+
+    // Clear error jika validasi lolos
+    setFormErrors({});
+    setIsSubmitting(true);
+
+    // 2. Format nomor WhatsApp (Format Internasional tanpa tanda +)
+    const nomorWA = "6289681305605"; //[cite: 1]
+
+    // 3. Menyusun template pesan WhatsApp yang rapi
+    const teksPesan = `Halo Afif, ada pesan baru dari Portofolio Web Anda! 🚀
+
+📌 *Detail Pengirim:*
+• *Nama:* ${formData.name}
+• *Email:* ${formData.email}
+• *Subjek:* ${formData.subject || "Pertanyaan / Penawaran"}
+
+💬 *Pesan:*
+"${formData.message}"`;
+
+    // 4. Encode karakter agar sesuai URL parameter
+    const urlWhatsApp = `https://wa.me/${nomorWA}?text=${encodeURIComponent(teksPesan)}`;
+
+    // 5. Buka tab baru ke WhatsApp Web / Aplikasi WhatsApp
+    setTimeout(() => {
+      window.open(urlWhatsApp, "_blank");
+      setIsSubmitting(false);
+
+      // Reset form setelah terkirim
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    }, 500);
   };
 
   // --- DATA PORTOFOLIO AFIF RIVAYKUSNANTO ---
@@ -1374,7 +1399,7 @@ export default function App() {
               <div
                 className={`p-6 rounded-2xl border ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}
               >
-                <h3 className="text-xl font-bold mb-6">Kontak Langsung</h3>
+                <h3 className="text-xl font-bold mb-6">Kontak Kami</h3>
 
                 <div className="space-y-4">
                   {/* Email */}
@@ -1435,14 +1460,14 @@ export default function App() {
                     <div className="text-xs">
                       <div className="text-slate-400">Domisili</div>
                       <div className="font-semibold text-slate-200">
-                        Jakarta, Indonesia
+                        Tangerang, Indonesia
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Quick WhatsApp Action Button */}
+              {/* Quick WhatsApp Action Button
               <a
                 href="https://wa.me/6289681305605"
                 target="_blank"
@@ -1450,7 +1475,7 @@ export default function App() {
                 className="p-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all"
               >
                 <Phone size={18} /> Chat Langsung via WhatsApp
-              </a>
+              </a> */}
             </div>
 
             {/* Interactive Form */}
@@ -1458,6 +1483,9 @@ export default function App() {
               <div
                 className={`p-6 sm:p-8 rounded-3xl border ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}
               >
+                <h3 className="text-xl font-bold mb-6">
+                  Chat Langsung via WhatsApp
+                </h3>
                 {showToast && (
                   <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-3">
                     <CheckCircle size={20} />
@@ -1473,6 +1501,7 @@ export default function App() {
                       <label className="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
                         Nama Anda
                       </label>
+
                       <input
                         type="text"
                         value={formData.name}
@@ -1488,6 +1517,7 @@ export default function App() {
                               : "bg-slate-50 border-slate-200 focus:border-indigo-500"
                         }`}
                       />
+
                       {formErrors.name && (
                         <p className="text-[10px] text-red-500 mt-1">
                           {formErrors.name}
@@ -1499,6 +1529,7 @@ export default function App() {
                       <label className="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
                         Email
                       </label>
+
                       <input
                         type="email"
                         value={formData.email}
@@ -1514,6 +1545,7 @@ export default function App() {
                               : "bg-slate-50 border-slate-200 focus:border-indigo-500"
                         }`}
                       />
+
                       {formErrors.email && (
                         <p className="text-[10px] text-red-500 mt-1">
                           {formErrors.email}
@@ -1526,6 +1558,7 @@ export default function App() {
                     <label className="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
                       Subjek
                     </label>
+
                     <input
                       type="text"
                       value={formData.subject}
@@ -1545,6 +1578,7 @@ export default function App() {
                     <label className="block text-xs font-semibold uppercase text-slate-400 mb-1.5">
                       Pesan
                     </label>
+
                     <textarea
                       rows={4}
                       value={formData.message}
@@ -1560,6 +1594,7 @@ export default function App() {
                             : "bg-slate-50 border-slate-200 focus:border-indigo-500"
                       }`}
                     />
+
                     {formErrors.message && (
                       <p className="text-[10px] text-red-500 mt-1">
                         {formErrors.message}
@@ -1573,10 +1608,10 @@ export default function App() {
                     className="w-full py-3.5 px-6 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 disabled:opacity-50"
                   >
                     {isSubmitting ? (
-                      <span>Mengirim Pesan...</span>
+                      <span>Membuka WhatsApp...</span>
                     ) : (
                       <>
-                        <Send size={16} /> Kirim Pesan
+                        <Send size={16} /> Kirim via WhatsApp
                       </>
                     )}
                   </button>
